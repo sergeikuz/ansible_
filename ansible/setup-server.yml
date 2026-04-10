@@ -1,0 +1,52 @@
+---
+- name: Setup development server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update package manager cache
+      ansible.builtin.apt:
+        update_cache: yes
+      tags: update-cache
+
+    - name: Install Git
+      ansible.builtin.apt:
+        name: git
+        state: present
+      tags: install-packages
+
+    - name: Install Make
+      ansible.builtin.apt:
+        name: make
+        state: present
+      tags: install-packages
+
+    - name: Install Node.js
+      ansible.builtin.shell: |
+        curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+        apt-get install -y nodejs
+      tags: install-packages
+
+    - name: Create user 'arya'
+      ansible.builtin.user:
+        name: arya
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+      tags: create-users
+
+    - name: Create user 'sansa'
+      ansible.builtin.user:
+        name: sansa
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+      tags: create-users
+
+    - name: Create user 'tirion'
+      ansible.builtin.user:
+        name: tirion
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+      tags: create-users
+
