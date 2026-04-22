@@ -1,14 +1,11 @@
-- hosts: servers
+- hosts: webservers
   become: yes
-  vars:
-    nginx_port: 8090
-    root_dir: /var/tmp/www
 
   tasks:
     - name: Ensure Nginx is installed
       ansible.builtin.apt:
         name: nginx
-        state: latest
+        state: "{{ nginx_version }}"
       tags: install
 
     - name: Create web root directory
@@ -18,17 +15,17 @@
         mode: '0755'
       tags: setup
 
-    - name: Copy index.html file
+    - name: Copy index.html file from template
       ansible.builtin.template:
-        src: files/index.html
-        dest: "{{ root_dir }}/index.html"
+        src: templates/index.html.j2
+        dest: "{{ root_dir }}/{{ index_file }}"
       notify:
         - restart nginx
       tags: content
 
     - name: Update nginx configuration with template
       ansible.builtin.template:
-        src: templates/nginx.conf.j2
+        src: files/nginx.conf.j2
         dest: /etc/nginx/nginx.conf
       notify:
         - restart nginx
