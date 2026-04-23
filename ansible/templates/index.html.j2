@@ -14,5 +14,6 @@
   <h1>{{ (greeting_text + ' ' + inventory_hostname + '!') | upper }}</h1>
   <p>Current date and time: {{ ansible_date_time.iso8601 | default('Unknown') }}</p>
   <small>Generated on {{ ansible_date_time.date }} at {{ ansible_date_time.time }}</small>
+  <pre><code>{{ cowsay_result.stdout }}</code></pre>
 </body>
 </html>

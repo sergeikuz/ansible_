@@ -4,8 +4,16 @@
   vars:
     greeting_text: "This is server"
   tasks:
+    - name: Install cowsay
+      ansible.builtin.apt:
+        name: cowsay
+        state: present
+
+    - name: Run cowsay
+      ansible.builtin.command: /usr/games/cowsay "This is server {{ inventory_hostname }}!"
+      register: cowsay_result
+
     - name: Create HTML file from template
       ansible.builtin.template:
         src: templates/index.html.j2
         dest: /var/tmp/www/index.html
-
