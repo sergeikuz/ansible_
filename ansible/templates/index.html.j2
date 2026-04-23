@@ -8,8 +8,11 @@
 </head>
 <body>
   <h1>Hello World!</h1>
-  <h2>This is server {{ server_name }}!</h2>
+  <h2>This is server {{ inventory_hostname }}!</h2>
   <p>Port: {{ nginx_port }}</p>
   <p>Root directory: {{ root_dir }}</p>
+  <h1>{{ (greeting_text + ' ' + inventory_hostname + '!') | upper }}</h1>
+  <p>Current date and time: {{ ansible_date_time.iso8601 | default('Unknown') }}</p>
+  <small>Generated on {{ ansible_date_time.date }} at {{ ansible_date_time.time }}</small>
 </body>
 </html>

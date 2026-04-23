@@ -1,0 +1,11 @@
+- hosts: all
+  gather_facts: yes
+  become: yes
+  vars:
+    greeting_text: "This is server"
+  tasks:
+    - name: Create HTML file from template
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: /var/tmp/www/index.html
+
