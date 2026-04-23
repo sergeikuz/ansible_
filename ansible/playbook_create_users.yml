@@ -1,0 +1,60 @@
+- hosts: all
+  become: yes
+  vars:
+    users:
+      - jaime
+      - sansa
+      - robert
+
+  tasks:
+    - name: Create users
+      ansible.builtin.user:
+        name: "{{ item }}"
+        state: present
+        shell: /bin/bash
+        create_home: yes
+      loop: "{{ users }}"
+
+    - name: Ensure .ssh directory exists
+      ansible.builtin.file:
+        path: "/home/{{ item }}/.ssh"
+        state: directory
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0700'
+      loop: "{{ users }}"
+
+    - name: Copy SSH public key to authorized_keys
+      ansible.builtin.copy:
+        src: files/id_rsa.pub
+        dest: "/home/{{ item }}/.ssh/authorized_keys"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0600'
+      loop: "{{ users }}"
+
+    - name: Create Git config for each user
+      ansible.builtin.copy:
+        content: |
+          [alias]
+            co = checkout
+            ci = commit
+            st = status
+            br = branch
+            hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+            type = cat-file -t
+            dump = cat-file -p
+            commend = commit --amend
+          [core]
+            excludesFile = ~/.gitignore_global
+            editor = vim
+          [user]
+            email = {{ item }}@test.com
+            name = {{ item }}
+          [credential]
+            helper = store
+        dest: "/home/{{ item }}/.gitconfig"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0644'
+      loop: "{{ users }}"
