@@ -1,0 +1,52 @@
+- hosts: all
+  become: yes
+  pre_tasks:
+    - name: Update apt cache (Ubuntu/Debian)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install common packages
+      package:
+        name:
+          - curl
+          - wget
+          - vim
+        state: present
+
+  roles:
+    - role: geerlingguy.git
+    - role: geerlingguy.postgresql
+      vars:
+        postgresql_databases:
+          - name: dev_db
+        postgresql_users:
+          - name: dev_user
+            pass: "secure_password"
+            priv: "dev_db.*:ALL"
+    - role: nodesource.node
+      vars:
+        nodejs_version: "18.x"
+
+  tasks:
+    - name: Create project directory
+      file:
+        path: /opt/projects
+        state: directory
+        mode: '0755'
+
+    - name: Verify Node.js installation
+      command: node --version
+      register: node_version
+
+    - name: Display Node.js version
+      debug:
+        var: node_version.stdout
+
+    - name: Verify Git installation
+      command: git --version
+      register: git_version
+
+    - name: Display Git version
+      debug:
+        var: git_version.stdout
