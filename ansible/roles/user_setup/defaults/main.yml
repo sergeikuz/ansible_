@@ -1,0 +1,8 @@
+---
+username: "devuser"
+
+user_password: "$6$j4MNQrJ5o0Ids.e0$Zw0jhMaXRHAZpbkCzyf2Tqp9b5oxfsrq75uXISa1D8XNSuxa3VmstzY.avS1J0ck.tIrFlC5VN7uPXVXtR0h9."
+
+git_email: "user@example.com"
+
+git_name: "Developer User"
